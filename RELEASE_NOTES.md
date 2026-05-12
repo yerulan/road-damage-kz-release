@@ -1,5 +1,11 @@
 # Release Notes
 
+## v0.1.2
+
+Submission wording update that narrows the AI-assisted technical support
+disclosure to repository development, code editing, command preparation, and
+LaTeX formatting.
+
 ## v0.1.1
 
 Submission-ready GitHub-only release. This update removes the requirement for

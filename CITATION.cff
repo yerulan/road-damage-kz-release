@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this code, manifests, annotations, or reports, please cite this project and the associated paper."
 title: "Road Damage Detection and Classification for Kazakhstan Road Imagery"
-version: "0.1.1"
+version: "0.1.2"
 date-released: "2026-05-12"
 type: software
 license: MIT
