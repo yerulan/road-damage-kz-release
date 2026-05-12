@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "road-damage-kz"
+version = "0.1.0"
+description = "Kazakhstan road damage benchmark and Ghost-CA-YOLO modeling pipeline."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+ml = [
+  "ultralytics>=8.0",
+  "Pillow>=10.0",
+]
+vision = [
+  "Pillow>=10.0",
+  "torch>=2.0",
+  "transformers>=4.40",
+]
+privacy = [
+  "opencv-python-headless>=4.9",
+]
+
+[project.scripts]
+roadkz = "road_damage_kz.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

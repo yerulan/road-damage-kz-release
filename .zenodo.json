@@ -1,0 +1,40 @@
+{
+  "title": "Road Damage Detection and Classification for Kazakhstan Road Imagery",
+  "upload_type": "software",
+  "description": "Code, manifests, annotations, reports, and Ghost-CA-YOLO experiment tooling for a Kazakhstan road-damage detection and classification study. The release excludes raw third-party images and RDD2022 image archives; users reconstruct local image caches from recorded source URLs and download RDD2022 separately from its official source.",
+  "creators": [
+    {
+      "name": "Sambetbayeva, Aizhan",
+      "orcid": "0000-0003-0032-0533",
+      "affiliation": "Faculty of Information Technology and Artificial Intelligence, Al-Farabi Kazakh National University, Almaty, Kazakhstan"
+    },
+    {
+      "name": "Shormakova, Assem",
+      "orcid": "0000-0002-1637-4643",
+      "affiliation": "Faculty of Information Technology and Artificial Intelligence, Al-Farabi Kazakh National University, Almaty, Kazakhstan"
+    },
+    {
+      "name": "Abaiuly, Yerulan",
+      "orcid": "0000-0003-2248-3819",
+      "affiliation": "Faculty of Information Technology and Artificial Intelligence, Al-Farabi Kazakh National University, Almaty, Kazakhstan"
+    }
+  ],
+  "access_right": "open",
+  "license": "mit",
+  "keywords": [
+    "road damage detection",
+    "pavement distress",
+    "Kazakhstan",
+    "object detection",
+    "Ghost-CA-YOLO",
+    "YOLO11",
+    "RDD2022"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/yerulan/road-damage-kz",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}

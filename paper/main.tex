@@ -1,0 +1,360 @@
+\documentclass[applsci,article,submit,moreauthors]{Definitions/mdpi}
+
+\firstpage{1}
+\makeatletter
+\setcounter{page}{\@firstpage}
+\makeatother
+\pubvolume{1}
+\issuenum{1}
+\articlenumber{0}
+\pubyear{2026}
+\copyrightyear{2026}
+\datereceived{}
+\daterevised{}
+\dateaccepted{}
+\datepublished{}
+\doinum{}
+
+\Title{Road Damage Detection and Classification for Kazakhstan Road Imagery}
+
+\newcommand{\orcidauthorA}{0000-0003-0032-0533}
+\newcommand{\orcidauthorB}{0000-0002-1637-4643}
+\newcommand{\orcidauthorC}{0000-0003-2248-3819}
+\Author{Aizhan Sambetbayeva $^{1,}$*\orcidA{}, Assem Shormakova $^{1}$\orcidB{} and Yerulan Abaiuly $^{1}$\orcidC{}}
+\AuthorNames{Aizhan Sambetbayeva, Assem Shormakova and Yerulan Abaiuly}
+\address{%
+$^{1}$ \quad Faculty of Information Technology and Artificial Intelligence, Al-Farabi Kazakh National University, Almaty, Kazakhstan}
+\corres{Correspondence: sambetbaevamea@gmail.com (Aizhan Sambetbayeva)}
+\firstnote{Scopus Author ID: Aizhan Sambetbayeva, 57211254275; Assem Shormakova, 55786942400; Yerulan Abaiuly, 57994281500.}
+
+\abstract{Regional road-damage benchmarks are needed because detector performance measured on international datasets does not guarantee reliable operation under local pavement, camera, and maintenance conditions. This study presents a Kazakhstan road-damage benchmark and evaluates YOLO11s and Ghost-CA-YOLO for detection and classification of pavement distress. Starting from 3613 Kazakhstan image leads, we curated 75 publishable open-license, privacy-screened road images, including 50 damaged-road images, 25 normal or hard-negative road images, and 104 bounding boxes for longitudinal cracks, transverse cracks, alligator cracks, and potholes. Ghost-CA-YOLO combines Ghost bottlenecks with Coordinate Attention to improve lightweight crack representation. On RDD2022 validation, YOLO11s reached 0.610 mAP50 and 0.298 mAP50--95, while Ghost-CA-YOLO reached 0.576 and 0.282 with fewer parameters (8.54M vs. 9.41M) and faster measured inference (1.9 ms vs. 2.7 ms per image). On Kazakhstan external validation without local fine-tuning, Ghost-CA-YOLO transferred better than YOLO11s (0.262 vs. 0.168 mAP50). After Kazakhstan adaptation, YOLO11s achieved the highest target-domain accuracy (0.690 mAP50 and 0.324 mAP50--95), while Ghost-CA-YOLO remained competitive (0.675 and 0.261) with similar recall. The contribution is a documented Kazakhstan benchmark and a reproducible evaluation showing that even a compact local dataset substantially improves road-damage detection under Kazakhstan conditions.}
+
+\keyword{road damage detection; pavement distress; Kazakhstan; object detection; Ghost-CA-YOLO; Coordinate Attention; GhostNet; domain shift; YOLO11; RDD2022}
+
+\begin{document}
+
+\section{Introduction}
+
+Road-surface damage affects ride comfort, vehicle operating costs, maintenance planning, and transport safety. Computer-vision systems can support road inspection by detecting cracks, potholes, and other pavement distress from street-level imagery. Public road-damage datasets have made this problem easier to benchmark, but their geographic coverage remains uneven. A model trained on imagery from one set of countries may not perform reliably in another country if pavement materials, road markings, camera viewpoints, vehicle types, lighting, and maintenance practices differ.
+
+Kazakhstan is a useful case for studying this gap. It is geographically large, road conditions vary substantially across urban, industrial, and intercity settings, and the country is underrepresented in widely used road-damage benchmarks. At the same time, collecting a new field dataset can be expensive and slow. Open-license internet imagery offers a practical route for creating a regional benchmark when each image is connected to source-level licensing, attribution, and privacy review.
+
+This paper introduces a Kazakhstan open-license benchmark for road-damage detection and classification and adapts Ghost-CA-YOLO to local road imagery. The benchmark is designed for external validation and lightweight adaptation of detectors trained on RDD. Every publishable row is linked to source, author or owner attribution, license metadata, privacy status, and annotation decisions. This makes the dataset suitable for a reproducible regional transfer study rather than an opaque web scrape.
+
+The contributions of this study are:
+
+\begin{itemize}
+\item a Kazakhstan-focused open-license benchmark with 75 publishable road images, 50 damaged-road images, and 104 road-damage bounding boxes;
+\item a provenance-audited road-image ledger separating discovery leads from publishable benchmark rows;
+\item a privacy-safe annotation workflow for street-level imagery containing faces, vehicle plates, and other personal identifiers;
+\item a Kazakhstan external-validation benchmark aligned with RDD-style pavement-damage classes;
+\item an adapted Ghost-CA-YOLO detector that combines Ghost bottlenecks and Coordinate Attention for efficient pavement-damage detection;
+\item a comparison with YOLO11s on RDD2022 and Kazakhstan imagery, including accuracy and computational-efficiency indicators;
+\item a reproducible release plan that publishes code, manifests, annotations, reports, privacy-safe derivatives where permitted, and reconstruction instructions for the open-license source imagery.
+\end{itemize}
+
+\section{Related Work}
+
+\subsection{Road-Damage Detection Datasets}
+
+Road-damage detection has benefited from datasets that standardize pavement-distress classes and enable comparison between object detectors. RDD2020 introduced a large annotated dataset for automatic road-damage detection and classification \cite{arya2021rdd2020}. Subsequent multi-country work showed that deep detectors can classify road damage across different national image sources, while also revealing the importance of geographic diversity for robust deployment \cite{arya2021multiple}. RDD2022 expanded this direction into a multi-national benchmark with 47,420 images from Japan, India, the Czech Republic, Norway, the United States, and China \cite{arya2024rdd2022}. The RoadDamageDetector project provides the public dataset lineage and baseline tooling used in many RDD-style studies \cite{sekilab2026road}. These datasets commonly include longitudinal cracks, transverse cracks, alligator cracks, and potholes, which makes them suitable for cross-country transfer and domain-shift experiments.
+
+However, benchmark availability does not eliminate geographic bias. Data collected from one region may encode local pavement color, road-lane appearance, weather, camera position, and repair practices. When the deployment region is absent from the training set, reported source-domain accuracy may overstate practical usefulness. This motivates external validation on region-specific imagery.
+
+\subsection{Object Detection for Pavement Distress}
+
+YOLO-family detectors are widely used for pavement-distress detection because they balance computational cost and accuracy. Lightweight models are especially relevant for road-monitoring workflows where inference may run on consumer hardware, dashcam pipelines, or municipal inspection systems. Recent road-damage studies have explored lightweight attention modules, Ghost-style feature generation, and feature-aggregation designs to improve real-time pavement detection without large computational cost \cite{youwai2024yolo9tr,chen2024lagyolo,liu2025yoloattention}. GhostNet reduces redundant convolutional feature maps by generating additional features through cheap linear operations \cite{han2020ghostnet}, while Coordinate Attention embeds long-range directional information into channel attention with low overhead \cite{hou2021coordatt}. These mechanisms are well matched to road damage: cracks are elongated and directional, while potholes require compact local features. This study adapts a Ghost bottleneck and Coordinate Attention YOLO architecture to Kazakhstan imagery and compares it with a YOLO11s baseline implemented in the Ultralytics framework \cite{ultralytics2026}.
+
+\subsection{Segmentation and Hybrid Inspection Models}
+
+Object detection provides bounding boxes that are convenient for maintenance databases, but pixel-level segmentation can localize cracks and surface defects more precisely. Mask R-CNN established a widely used instance-segmentation baseline \cite{he2017maskrcnn}. Pavement-specific work has combined object detection and segmentation for crack analysis \cite{du2023pavement}, while hybrid approaches using Mask R-CNN and Vision Transformers improve crack segmentation under complex scene conditions \cite{alshawabkeh2025hybrid}. Foundation-model pipelines such as Crack SAM and YOLO+Segment Anything further show how segmentation priors can improve infrastructure inspection workflows \cite{rakshitha2024cracksam,cabral2025hybrid}. Robust semantic-segmentation models that mix global context and local image features are also relevant for low-contrast crack detection \cite{zhang2024semantic}. These studies motivate future Kazakhstan extensions with masks and severity labels, but the present benchmark focuses on RDD-compatible bounding boxes for direct comparison with public road-damage detectors.
+
+\subsection{Data Provenance, Privacy, and Dataset Reuse}
+
+Computer-vision papers often describe image collection as a technical step, but publication depends on legal and ethical reuse conditions. Web search, map platforms, social-media posts, and street-level imagery can produce useful leads while still being unsuitable for raw redistribution. A publishable benchmark should record source URL, author or owner attribution, license label or permission text, privacy review, and any transformations such as blurring. This is especially important for regional benchmarks built without a dedicated field-collection campaign.
+
+\section{Materials and Methods}
+
+\subsection{Study Design}
+
+The study follows a two-domain design. The source domain is RDD2022, used for detector training and internal validation. The target domain is Kazakhstan road imagery, used for external validation and small-sample adaptation. The central question is how much RDD2022-trained detectors lose when transferred to Kazakhstan imagery, and how much accuracy can be recovered by fine-tuning on a compact local benchmark.
+
+\subsection{Kazakhstan Image Discovery}
+
+Candidate Kazakhstan imagery was collected from source ledgers, Wikimedia Commons categories and searches, Openverse discovery leads, and Mapillary street-level imagery obtained through the API. Search results were treated as discovery leads until their source-page license and attribution could be verified. Each candidate row was stored in \texttt{data/manifests/images.csv}, with associated triage decisions stored in \texttt{data/manifests/triage.csv}.
+
+The repository contains 3613 Kazakhstan candidate rows. Of these, 75 rows are publishable after license and privacy review. A row is publishable only when it has a source URL, attribution, license label, \texttt{license\_ok=true}, \texttt{privacy\_checked=true}, and a non-unknown image-level label.
+
+\subsection{License and Privacy Audit}
+
+Images were excluded from the publishable benchmark if licensing was unclear, the source prohibited reuse, the image was not a road photograph, or the road surface was not visible. Faces, readable vehicle plates, and other personal identifiers were blurred before export. The publishable benchmark is built from reusable open-license sources, including Creative Commons, CC0, and public-domain-style labels. The public release contains code, manifests, annotations, reports, privacy-safe derivatives where permitted, and reconstruction instructions; users can reconstruct local image caches from recorded source URLs subject to each source license.
+
+Mapillary images are treated as CC-BY-SA source material with attribution and share-alike obligations. Wikimedia Commons rows retain their recorded Creative Commons or public-domain labels. Openverse rows are discovery leads unless the original source page confirms reusable licensing.
+
+\subsection{Kazakhstan Benchmark}
+
+The publishable benchmark contains 75 open-license images: 50 damaged road images and 25 normal or hard-negative road images. The damaged subset contains four target classes: longitudinal crack, transverse crack, alligator crack, and pothole. The annotation ledger contains 104 boxes: 34 strict gold boxes and 70 fast-growth boxes used for adaptation experiments. This size is sufficient for a Kazakhstan external-validation and adaptation study and establishes a reusable foundation for later dataset expansion.
+
+\begin{table}[H]
+\caption{Current Kazakhstan benchmark summary generated from the project manifests.}
+\centering
+\begin{tabular}{lc}
+\toprule
+Metric & Count \\
+\midrule
+Candidate rows & 3613 \\
+Publishable rows & 75 \\
+Publishable damaged rows & 50 \\
+Publishable normal rows & 25 \\
+Bounding boxes & 104 \\
+Strict gold boxes & 34 \\
+Provisional fast-growth boxes & 70 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{../reports/figures/dataset_funnel.pdf}
+\caption{Audit funnel from Kazakhstan candidate leads to the publishable benchmark subset.}
+\end{figure}
+
+\begin{table}[H]
+\caption{Current bounding-box distribution in the Kazakhstan benchmark.}
+\centering
+\begin{tabular}{lc}
+\toprule
+Class & Boxes \\
+\midrule
+Longitudinal crack & 48 \\
+Transverse crack & 10 \\
+Alligator crack & 35 \\
+Pothole & 11 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{../reports/figures/class_distribution.pdf}
+\caption{Distribution of annotated Kazakhstan road-damage boxes by class.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.80\textwidth]{../reports/figures/sample_annotation.jpg}
+\caption{Example annotation preview from the privacy-screened Kazakhstan workflow.}
+\end{figure}
+
+\subsection{Annotation Protocol}
+
+The object-detection taxonomy follows RDD-style classes. A longitudinal crack is a crack running mostly parallel to the road direction. A transverse crack runs mostly across the road direction. Alligator cracking describes a connected network or block-like cracked surface. A pothole is an open hole, depression, bowl-shaped pavement loss, or visibly damaged road-surface cavity. Normal images are retained for false-positive analysis but do not receive detection boxes.
+
+Annotations are stored as pixel-coordinate bounding boxes in the annotation manifest. Each row records image ID, class name, box coordinates, annotator, review status, and notes. The reviewed gold boxes support the strict external-validation split, while the fast-growth boxes provide additional Kazakhstan adaptation examples.
+
+\subsection{External Training Data}
+
+RDD2022 was used as the external source-domain dataset. The local import contains 17,000 usable images and 36,059 boxes after filtering to the four shared detection classes. Pascal VOC annotations were converted to YOLO format. The class mapping was D00 to longitudinal crack, D10 to transverse crack, D20 to alligator crack, and D40 to pothole. Unsupported RDD classes were skipped.
+
+\subsection{Ghost-CA-YOLO Architecture}
+
+Ghost-CA-YOLO is built as a lightweight modification of the YOLO detector family. The backbone replaces selected standard convolutional bottlenecks with Ghost bottlenecks. A Ghost bottleneck first computes a smaller set of intrinsic feature maps using ordinary convolution, then produces additional feature maps using low-cost linear transformations. This reduces redundant computation while preserving representational capacity.
+
+Coordinate Attention modules are inserted at multi-scale feature junctions before feature-pyramid aggregation. Unlike channel-only attention, Coordinate Attention separately encodes horizontal and vertical positional information. This is useful for pavement distress because longitudinal and transverse cracks have strong directional structure, while alligator cracking requires the detector to retain local texture and spatial context. The resulting architecture is designed to improve crack sensitivity without increasing deployment cost.
+
+\subsection{Model Training}
+
+The experiment compares YOLO11s with Ghost-CA-YOLO. Each model is trained first on the RDD2022 import for 50 epochs at 640-pixel input resolution. The RDD-only weights are evaluated on RDD validation data and on the Kazakhstan external-validation split. A second experiment track fine-tunes the RDD-trained weights with the Kazakhstan training split for 30 additional epochs using a lower learning rate and early stopping.
+
+The Kazakhstan split is generated using grouped sampling. Frames from the same Mapillary sequence or near-identical location remain in the same split to reduce leakage. The split uses 70\% training, 15\% validation, and 15\% Kazakhstan test, stratified by class where possible and grouped by sequence/location.
+
+\subsection{Evaluation Metrics}
+
+The study reports precision, recall, mAP50, mAP50--95, parameter count, GFLOPs, and inference speed. RDD validation and Kazakhstan external-validation results are reported separately. The key comparison is whether Ghost-CA-YOLO improves Kazakhstan performance and computational efficiency relative to the YOLO11s baseline while preserving reasonable source-domain behavior.
+
+\section{Results}
+
+\subsection{Dataset Audit}
+
+The audit produced a compact but publication-ready open-license benchmark from a much larger discovery pool. From 3613 Kazakhstan candidate rows, 75 images satisfy the license, privacy, and labeling criteria for publication. Most excluded rows are normal-road context, non-road imagery, rail or sidewalk scenes, duplicate frames, ambiguous pavement texture, poor-quality imagery, or rows with insufficient licensing or privacy status. This filtering is a dataset contribution in its own right: it converts heterogeneous online imagery into a documented, reusable Kazakhstan road-damage benchmark.
+
+The Mapillary source contributed most of the damaged-road growth because street-level imagery provides the necessary road-surface viewpoint and open-license reuse conditions. Wikimedia Commons provided useful open-license context but lower damage density. Openverse and web search were useful mainly for discovery and cross-checking, not direct publication.
+
+\subsection{Source-Domain Performance and Efficiency}
+
+Table~3 shows source-domain results for models trained on RDD2022. YOLO11s obtained the higher RDD2022 validation accuracy, reaching 0.610 mAP50 and 0.298 mAP50--95. Ghost-CA-YOLO reached 0.576 mAP50 and 0.282 mAP50--95. Although Ghost-CA-YOLO did not exceed YOLO11s on the source domain, it used fewer parameters and had faster measured inference on the validation pass. Its GFLOPs count was slightly higher in the implemented YOLO11s configuration, so the efficiency result is best interpreted as a parameter and measured-latency advantage rather than a lower-FLOPs architecture.
+
+\begin{table}[H]
+\caption{RDD2022 validation and efficiency results.}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\toprule
+Model & Precision & Recall & mAP50 & mAP50--95 & Params (M) & GFLOPs & Inference (ms/img) \\
+\midrule
+YOLO11s & 0.623 & 0.576 & 0.610 & 0.298 & 9.41 & 21.3 & 2.7 \\
+Ghost-CA-YOLO & 0.608 & 0.549 & 0.576 & 0.282 & 8.54 & 23.1 & 1.9 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{../reports/figures/ghost_ca_efficiency.pdf}
+\caption{Accuracy and efficiency comparison between YOLO11s and Ghost-CA-YOLO on RDD2022 validation.}
+\end{figure}
+
+\subsection{Kazakhstan External Validation}
+
+RDD-only models perform poorly on Kazakhstan imagery because the target domain differs in camera viewpoint, pavement texture, weather, road geometry, and damage appearance. Table~4 presents Kazakhstan results before and after Kazakhstan adaptation. Without Kazakhstan fine-tuning, Ghost-CA-YOLO transfers better than YOLO11s, reaching 0.262 mAP50 compared with 0.168 mAP50. After local adaptation, both detectors improve strongly. YOLO11s obtains the highest adapted mAP50 and mAP50--95, while Ghost-CA-YOLO remains close in mAP50 and reaches nearly identical recall.
+
+\begin{table}[H]
+\caption{Kazakhstan external-validation results.}
+\centering
+\begin{tabular}{llcccc}
+\toprule
+Model & Training setting & Precision & Recall & mAP50 & mAP50--95 \\
+\midrule
+YOLO11s & RDD-only & 0.276 & 0.214 & 0.168 & 0.031 \\
+Ghost-CA-YOLO & RDD-only & 0.245 & 0.429 & 0.262 & 0.032 \\
+YOLO11s & RDD + KZ adaptation & 0.573 & 0.784 & 0.690 & 0.324 \\
+Ghost-CA-YOLO & RDD + KZ adaptation & 0.544 & 0.786 & 0.675 & 0.261 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{../reports/figures/kz_external_map50.pdf}
+\caption{External-validation mAP50 on Kazakhstan imagery before and after Kazakhstan adaptation.}
+\end{figure}
+
+The improvement is largest in recall because RDD-only models tend to miss low-contrast cracking and rough pavement patterns in Kazakhstan imagery. Precision also improves after adaptation, but remains limited by ambiguous surface texture, shadows, road repairs, and sequence similarity between some Mapillary frames.
+
+\subsection{Adaptation Gain}
+
+Table~5 summarizes the absolute improvement produced by Kazakhstan adaptation. The main result is not that a detector trained on RDD2022 is directly deployable in Kazakhstan; rather, the result shows that a compact, audited Kazakhstan subset can sharply improve target-domain performance. YOLO11s gains 0.522 mAP50 and 0.293 mAP50--95 after local adaptation. Ghost-CA-YOLO gains 0.414 mAP50 and 0.229 mAP50--95.
+
+\begin{table}[H]
+\caption{Absolute Kazakhstan metric gains from local adaptation.}
+\centering
+\begin{tabular}{lcc}
+\toprule
+Model & mAP50 gain & mAP50--95 gain \\
+\midrule
+YOLO11s & +0.522 & +0.293 \\
+Ghost-CA-YOLO & +0.414 & +0.229 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{../reports/figures/adaptation_gain.pdf}
+\caption{Absolute Kazakhstan fine-tuning gains over RDD-only transfer.}
+\end{figure}
+
+\subsection{Error Analysis}
+
+The most common false negatives are thin longitudinal cracks, low-contrast crack networks, and worn pavement where cracking blends into general roughness. False positives occur on tar seams, lane markings, wet patches, shadows, gravel shoulders, and repaired asphalt. These errors are consistent with a model trained on international RDD imagery and evaluated on a visually different regional domain.
+
+Qualitative review shows that adaptation improves recognition of Kazakhstan surface texture but does not eliminate ambiguity. A deployable system would benefit from more independent Kazakhstan imagery, stronger negative sampling, and possibly segmentation or severity labels for rough-surface cases that do not fit cleanly into RDD classes.
+
+\section{Discussion}
+
+\subsection{Domain Shift}
+
+The results support the main hypothesis: source-domain RDD validation performance is not sufficient evidence of Kazakhstan readiness. Even when YOLO11s and Ghost-CA-YOLO perform reasonably on RDD validation data, Kazakhstan mAP50 falls sharply without adaptation. This gap reflects a combination of pavement appearance, camera perspective, road-lane context, local repair patterns, and annotation differences.
+
+The adaptation gains show that a small provenance-audited Kazakhstan subset can improve external validation performance. Ghost-CA-YOLO is useful in this setting because it improves RDD-only Kazakhstan transfer and offers lower parameter count and faster measured inference than YOLO11s. After Kazakhstan fine-tuning, however, YOLO11s provides the best mAP50 and mAP50--95, while Ghost-CA-YOLO remains competitive and reaches similar recall. This means the architecture should be presented as an efficient transfer-oriented alternative, not as an unqualified accuracy winner. The current benchmark is not yet large or independent enough for a strong deployment claim. The Shymkent frames are useful for fast growth and training development, and grouped splitting is required to avoid train/test leakage.
+
+\subsection{Dataset Provenance and Reuse}
+
+The dataset audit shows that regional road-damage research can fail at the publication stage if data provenance is weak. The proposed benchmark addresses this directly: every publishable row records source, author, license, privacy status, and annotation status. This makes the Kazakhstan subset more useful for scientific reuse than a larger but undocumented scrape.
+
+The proposed release strategy uses the open-license character of the sources while preserving auditability. The release includes manifests, source URLs, annotations, reports, scripts, and privacy-safe derivatives where permitted. This allows the benchmark to be reconstructed and verified without separating images from their licensing and attribution context.
+
+\subsection{Limitations}
+
+The dataset is compact and class-imbalanced, with partial sequence correlation. Fast-growth boxes reduce the cost of adaptation, but strict annotation review remains important for future dataset releases. The current benchmark supports regional external validation, while larger independent Kazakhstan collections are needed for city-wide deployment claims.
+
+Another limitation is that the RDD taxonomy may not fully describe Kazakhstan road-surface conditions. Some visible damage appears as broad rough pavement, degraded edge surfaces, or repaired asphalt rather than clean crack or pothole instances. Future work should consider severity labels, surface-condition categories, or segmentation masks for these cases.
+
+\section{Conclusions}
+
+This study presents an open-license Kazakhstan benchmark for road-damage detection and classification and adapts Ghost-CA-YOLO to local road imagery. The repository contains 3613 candidate rows, 75 publishable images, 50 damaged images, and 104 bounding boxes. The experiments show a clear domain-shift gap: RDD-only detectors perform well on RDD validation data but weakly on Kazakhstan imagery, while small Kazakhstan adaptation improves target-domain mAP50 substantially.
+
+The main contribution is a documented Kazakhstan road-damage benchmark together with a reproducible YOLO11s and Ghost-CA-YOLO evaluation on Kazakhstan pavement scenes. Ghost-CA-YOLO provides better RDD-only transfer to Kazakhstan and faster measured inference, while YOLO11s provides the strongest adapted accuracy. The dataset is compact but strong enough to support a regional external-validation and adaptation study because it combines open-license imagery, privacy screening, four road-damage classes, and auditable annotation records. This structure creates a practical foundation for future Kazakhstan road-monitoring datasets, segmentation labels, and pavement-management experiments.
+
+\authorcontributions{Conceptualization, Aizhan Sambetbayeva, Assem Shormakova and Y.A.; methodology, Aizhan Sambetbayeva, Assem Shormakova and Y.A.; software, Y.A.; data curation, Aizhan Sambetbayeva, Assem Shormakova and Y.A.; validation, Aizhan Sambetbayeva, Assem Shormakova and Y.A.; writing---original draft preparation, Aizhan Sambetbayeva, Assem Shormakova and Y.A.; writing---review and editing, Aizhan Sambetbayeva, Assem Shormakova and Y.A.}
+
+\funding{This research received no external funding.}
+
+\institutionalreview{Not applicable.}
+
+\informedconsent{Not applicable. The study uses publicly available road imagery and excludes or blurs personal identifiers before publication.}
+
+\dataavailability{Code, manifests, annotations, generated reports, and reconstruction instructions are made available in a public repository. The publishable Kazakhstan benchmark is built from open-license sources with recorded attribution and license metadata; privacy-safe derivatives may be released where permitted by the source license and privacy review. Image provenance and source URLs are recorded in the manifest so that users can reconstruct local caches subject to each source license. RDD data must be downloaded from the official RoadDamageDetector/RDD2022 source according to its terms.}
+
+\acknowledgments{The authors thank the maintainers of the RoadDamageDetector/RDD datasets and the open-license image communities whose metadata enables reproducible source auditing.}
+
+\conflictsofinterest{The authors declare no conflict of interest.}
+
+\reftitle{References}
+\begin{thebibliography}{999}
+
+\bibitem[Arya et al.(2021)]{arya2021rdd2020}
+Arya, D.; Maeda, H.; Ghosh, S.K.; Toshniwal, D.; Sekimoto, Y. RDD2020: An annotated image dataset for automatic road damage detection using deep learning. \textit{Data in Brief} \textbf{2021}, \textit{36}, 107133.
+
+\bibitem[Arya et al.(2021)]{arya2021multiple}
+Arya, D.; Maeda, H.; Ghosh, S.K.; Toshniwal, D.; Mraz, A.; Kashiyama, T.; Sekimoto, Y. Deep learning-based road damage detection and classification for multiple countries. \textit{Automation in Construction} \textbf{2021}, \textit{132}, 103935. \url{https://doi.org/10.1016/j.autcon.2021.103935}.
+
+\bibitem[Arya et al.(2024)]{arya2024rdd2022}
+Arya, D.; Maeda, H.; Ghosh, S.K.; Toshniwal, D.; Sekimoto, Y. RDD2022: A multi-national image dataset for automatic road damage detection. \textit{Geoscience Data Journal} \textbf{2024}, 1--17. \url{https://doi.org/10.1002/gdj3.260}.
+
+\bibitem[Alshawabkeh et al.(2025)]{alshawabkeh2025hybrid}
+Alshawabkeh, S.; Wu, L.; Dong, D.; Cheng, Y.; Li, L. A hybrid approach for pavement crack detection using Mask R-CNN and Vision Transformer model. \textit{Computers, Materials \& Continua} \textbf{2025}, \textit{82}, 561--577. \url{https://doi.org/10.32604/cmc.2024.057213}.
+
+\bibitem[Du et al.(2023)]{du2023pavement}
+Du, Y.; Zhong, S.; Fang, H.; Wang, N.; Liu, C.; Wu, D.; Xiang, M. Modeling automatic pavement crack object detection and pixel-level segmentation. \textit{Automation in Construction} \textbf{2023}, \textit{150}, 104840. \url{https://doi.org/10.1016/j.autcon.2023.104840}.
+
+\bibitem[Rakshitha et al.(2024)]{rakshitha2024cracksam}
+Rakshitha, R.; Srinath, S.; Vinay Kumar, N.; Rashmi, S.; Poornima, B.V. Crack SAM: Enhancing crack detection utilizing foundation models and Detectron2 architecture. \textit{Journal of Infrastructure Preservation and Resilience} \textbf{2024}, \textit{5}, 11. \url{https://doi.org/10.1186/s43065-024-00103-1}.
+
+\bibitem[Liu(2025)]{liu2025yoloattention}
+Liu, J. A novel YOLO algorithm integrating attention mechanisms and fuzzy information for pavement crack detection. \textit{International Journal of Computational Intelligence Systems} \textbf{2025}, \textit{18}, 158. \url{https://doi.org/10.1007/s44196-025-00894-5}.
+
+\bibitem[Cabral et al.(2025)]{cabral2025hybrid}
+Cabral, R.; Santos, R.; Correia, J.A.F.O.; Ribeiro, D. A hybrid YOLO and Segment Anything Model pipeline for multi-damage segmentation in UAV inspection imagery. \textit{Sensors} \textbf{2025}, \textit{25}, 6568. \url{https://doi.org/10.3390/s25216568}.
+
+\bibitem[He et al.(2017)]{he2017maskrcnn}
+He, K.; Gkioxari, G.; Dollar, P.; Girshick, R. Mask R-CNN. In \textit{Proceedings of the IEEE International Conference on Computer Vision}, Venice, Italy, 22--29 October 2017; pp. 2980--2988. \url{https://doi.org/10.48550/arXiv.1703.06870}.
+
+\bibitem[Han et al.(2020)]{han2020ghostnet}
+Han, K.; Wang, Y.; Tian, Q.; Guo, J.; Xu, C.; Xu, C. GhostNet: More features from cheap operations. In \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition}, Seattle, WA, USA, 13--19 June 2020; pp. 1580--1589. \url{https://doi.org/10.1109/CVPR42600.2020.00165}.
+
+\bibitem[Hou et al.(2021)]{hou2021coordatt}
+Hou, Q.; Zhou, D.; Feng, J. Coordinate attention for efficient mobile network design. In \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition}, Nashville, TN, USA, 20--25 June 2021; pp. 13713--13722. \url{https://doi.org/10.1109/CVPR46437.2021.01350}.
+
+\bibitem[Youwai et al.(2024)]{youwai2024yolo9tr}
+Youwai, S.; Chaiyaphat, A.; Chaipetch, P. YOLO9tr: A lightweight model for pavement damage detection utilizing a generalized efficient layer aggregation network and attention mechanism. \textit{Journal of Real-Time Image Processing} \textbf{2024}, \textit{21}, 163. \url{https://doi.org/10.1007/s11554-024-01545-2}.
+
+\bibitem[Chen and Yu(2024)]{chen2024lagyolo}
+Chen, J.; Yu, X. LAG-YOLO: Efficient road damage detector via lightweight attention Ghost module. \textit{Journal of Innovative Computing} \textbf{2024}, \textit{2}, 123--135. \url{https://doi.org/10.26599/jic.2023.9180032}.
+
+\bibitem[Zhang et al.(2024)]{zhang2024semantic}
+Zhang, H.; Zhang, A.A.; Dong, Z.; He, A.; Liu, Y.; Zhan, Y.; Wang, K.C. Robust semantic segmentation for automatic crack detection within pavement images using multi-mixing of global context and local image features. \textit{IEEE Transactions on Intelligent Transportation Systems} \textbf{2024}, \textit{25}. \url{https://doi.org/10.1109/TITS.2024.3360263}.
+
+\bibitem[Sekilab(2026)]{sekilab2026road}
+Sekilab. RoadDamageDetector: Road damage detection datasets and baseline code. Available online: \url{https://github.com/sekilab/RoadDamageDetector/} (accessed on 9 May 2026).
+
+\bibitem[Ultralytics(2026)]{ultralytics2026}
+Ultralytics. Ultralytics YOLO documentation and software. Available online: \url{https://docs.ultralytics.com/} (accessed on 9 May 2026).
+
+\bibitem[MDPI(2026)]{mdpi2026applsci}
+MDPI. Applied Sciences instructions for authors. Available online: \url{https://www.mdpi.com/journal/applsci/instructions} (accessed on 9 May 2026).
+
+\end{thebibliography}
+
+\end{document}

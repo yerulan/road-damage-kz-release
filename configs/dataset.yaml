@@ -1,0 +1,15 @@
+path: data/processed/yolo
+train: images/train
+val: images/val
+test: images/kz-test
+names:
+  0: longitudinal_crack
+  1: transverse_crack
+  2: alligator_crack
+  3: pothole
+project:
+  country_focus: Kazakhstan
+  manifest: data/manifests/images.csv
+  classes: configs/classes.yaml
+  random_seed: 20260503
+  primary_metric: mAP50-95

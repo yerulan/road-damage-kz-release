@@ -1,0 +1,16 @@
+names:
+  0: longitudinal_crack
+  1: transverse_crack
+  2: alligator_crack
+  3: pothole
+  4: normal
+
+box_detection_classes:
+  - longitudinal_crack
+  - transverse_crack
+  - alligator_crack
+  - pothole
+
+image_level_only_classes:
+  - normal
+

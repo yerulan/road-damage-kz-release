@@ -1,0 +1,7 @@
+metric,value
+boxes,36059
+discovered,25846
+imported,17000
+skipped_empty,8846
+train,14475
+val,2525

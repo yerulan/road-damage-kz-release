@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this code, manifests, annotations, or reports, please cite this project and the associated paper."
+title: "Road Damage Detection and Classification for Kazakhstan Road Imagery"
+version: "0.1.0"
+date-released: "2026-05-11"
+type: software
+license: MIT
+repository-code: "https://github.com/yerulan/road-damage-kz"
+abstract: "Code, manifests, annotations, reports, and Ghost-CA-YOLO experiment tooling for a Kazakhstan road-damage detection and classification study."
+keywords:
+  - road damage detection
+  - pavement distress
+  - Kazakhstan
+  - object detection
+  - Ghost-CA-YOLO
+  - YOLO11
+  - RDD2022
+authors:
+  - family-names: Sambetbayeva
+    given-names: Aizhan
+    orcid: "https://orcid.org/0000-0003-0032-0533"
+  - family-names: Shormakova
+    given-names: Assem
+    orcid: "https://orcid.org/0000-0002-1637-4643"
+  - family-names: Abaiuly
+    given-names: Yerulan
+    orcid: "https://orcid.org/0000-0003-2248-3819"

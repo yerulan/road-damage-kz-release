@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+.env.local
+data/raw/
+data/external/
+data/processed/
+runs/
+*.pt
+*.pth
+*.onnx
+*.engine
+submission_package/
+public_release/

@@ -1,0 +1,176 @@
+{
+  "best_experiments": [
+    {
+      "eval_split": "kz-test",
+      "evaluation_dataset": "Kazakhstan test",
+      "experiment_id": "df1e85cfdd95",
+      "map50": "0.6752685647685648",
+      "map50_95": "0.2612473840107276",
+      "model": "Ghost-CA-YOLO",
+      "precision": "0.5437108681759781",
+      "recall": "0.7857142857142857",
+      "training_dataset": "RDD2022+Kazakhstan"
+    },
+    {
+      "eval_split": "val",
+      "evaluation_dataset": "RDD2022-val",
+      "experiment_id": "4cec3667e638",
+      "map50": "0.57581",
+      "map50_95": "0.28155",
+      "model": "Ghost-CA-YOLO",
+      "precision": "0.60812",
+      "recall": "0.54904",
+      "training_dataset": "RDD2022"
+    },
+    {
+      "eval_split": "val",
+      "evaluation_dataset": "Kazakhstan-val",
+      "experiment_id": "29b3badeff6b",
+      "map50": "0.47681",
+      "map50_95": "0.18359",
+      "model": "Ghost-CA-YOLO",
+      "precision": "0.55661",
+      "recall": "0.47917",
+      "training_dataset": "RDD2022+Kazakhstan"
+    },
+    {
+      "eval_split": "kz-test",
+      "evaluation_dataset": "Kazakhstan test",
+      "experiment_id": "b1ecb6a78c0b",
+      "map50": "0.6895956937799042",
+      "map50_95": "0.32434080599225334",
+      "model": "YOLO11s",
+      "precision": "0.5725873850967026",
+      "recall": "0.7840773118785764",
+      "training_dataset": "RDD2022+Kazakhstan"
+    },
+    {
+      "eval_split": "val",
+      "evaluation_dataset": "RDD2022-val",
+      "experiment_id": "a0cca3351e51",
+      "map50": "0.61015",
+      "map50_95": "0.29784",
+      "model": "YOLO11s",
+      "precision": "0.62284",
+      "recall": "0.57554",
+      "training_dataset": "RDD2022"
+    },
+    {
+      "eval_split": "val",
+      "evaluation_dataset": "Kazakhstan-val",
+      "experiment_id": "7d23425256c3",
+      "map50": "0.32134",
+      "map50_95": "0.15226",
+      "model": "YOLO11s",
+      "precision": "0.72155",
+      "recall": "0.30208",
+      "training_dataset": "RDD2022+Kazakhstan"
+    }
+  ],
+  "by_country": {
+    "Kazakhstan": 3613
+  },
+  "by_damage_label": {
+    "alligator_crack": 35,
+    "longitudinal_crack": 43,
+    "normal": 25,
+    "pothole": 7,
+    "transverse_crack": 10,
+    "unknown": 3538
+  },
+  "by_license": {
+    "BY": 2,
+    "CC-BY-2.0": 38,
+    "CC-BY-2.5": 1,
+    "CC-BY-3.0": 104,
+    "CC-BY-3.0-PL": 3,
+    "CC-BY-4.0": 14,
+    "CC-BY-NC-SA-2.0": 2,
+    "CC-BY-SA": 54,
+    "CC-BY-SA-2.0": 30,
+    "CC-BY-SA-2.5": 2,
+    "CC-BY-SA-3.0": 90,
+    "CC-BY-SA-4.0": 3179,
+    "CC0": 29,
+    "CC0-1.0": 1,
+    "PDM": 59,
+    "unknown": 5
+  },
+  "by_split": {
+    "kz-test": 10,
+    "train": 53,
+    "unsplit": 3538,
+    "val": 12
+  },
+  "dataset_summary": {
+    "annotation_class_count": 4,
+    "annotation_rows": 104,
+    "applied_sciences_minimum": {
+      "boxes": 100,
+      "classes": 3,
+      "damaged_images": 30,
+      "damaged_images_high": 50
+    },
+    "applied_sciences_preferred": {
+      "damaged_images": 100
+    },
+    "by_annotation_class": {
+      "alligator_crack": 35,
+      "longitudinal_crack": 48,
+      "pothole": 11,
+      "transverse_crack": 10
+    },
+    "by_annotation_review_status": {
+      "gold": 34,
+      "provisional_fast_growth": 70
+    },
+    "by_label": {
+      "alligator_crack": 35,
+      "longitudinal_crack": 43,
+      "normal": 25,
+      "pothole": 7,
+      "transverse_crack": 10
+    },
+    "by_license": {
+      "CC-BY-2.0": 2,
+      "CC-BY-3.0": 9,
+      "CC-BY-4.0": 1,
+      "CC-BY-SA-2.0": 2,
+      "CC-BY-SA-3.0": 4,
+      "CC-BY-SA-4.0": 53,
+      "CC0": 2,
+      "PDM": 2
+    },
+    "by_split": {
+      "kz-test": 10,
+      "train": 53,
+      "val": 12
+    },
+    "data_journal_minimum": {
+      "redistributable_images": 800
+    },
+    "publishable_damaged_rows": 50,
+    "publishable_normal_rows": 25,
+    "publishable_rows": 75,
+    "total_rows": 3613
+  },
+  "experiment_count": 8,
+  "paper_eligible_experiment_count": 8,
+  "publishable_rows": 75,
+  "rdd_import_summary": {
+    "boxes": 36059,
+    "class_distribution": {
+      "alligator_crack": 9214,
+      "longitudinal_crack": 13342,
+      "pothole": 5762,
+      "transverse_crack": 7741
+    },
+    "discovered": 25846,
+    "imported": 17000,
+    "skipped_empty": 8846,
+    "train": 14475,
+    "val": 2525
+  },
+  "sample_annotation_figure": "reports/figures/sample_annotation.jpg",
+  "total_rows": 3613
+}

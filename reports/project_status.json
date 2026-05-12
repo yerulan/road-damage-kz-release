@@ -1,0 +1,113 @@
+{
+  "annotations": {
+    "by_class": {
+      "alligator_crack": 35,
+      "longitudinal_crack": 48,
+      "pothole": 11,
+      "transverse_crack": 10
+    },
+    "readiness_source": "raw_privacy_cache",
+    "rows": 104,
+    "validation": {
+      "checked": 104,
+      "errors": 0,
+      "messages": []
+    },
+    "yolo_export_validation": {
+      "checked": 104,
+      "errors": 0,
+      "messages": []
+    }
+  },
+  "artifacts": {
+    "docs": {
+      "cover_letter": "paper/cover-letter.md",
+      "final_workflow": "docs/final-workflow.md",
+      "manuscript": "paper/main.tex",
+      "submission_checklist": "docs/submission-checklist.md"
+    },
+    "reports": {
+      "dataset_card": "reports/dataset_card.md",
+      "experiment_table": "reports/experiment_table.csv",
+      "paper_summary": "reports/paper_summary.json"
+    }
+  },
+  "blockers": [],
+  "experiments": {
+    "kazakhstan_eval_rows": 4,
+    "paper_eligible_rows": 8,
+    "rows": 8
+  },
+  "manifest": {
+    "by_label": {
+      "alligator_crack": 35,
+      "longitudinal_crack": 43,
+      "normal": 25,
+      "pothole": 7,
+      "transverse_crack": 10
+    },
+    "by_split": {
+      "kz-test": 10,
+      "train": 53,
+      "val": 12
+    },
+    "publishable_damaged_rows": 50,
+    "publishable_rows": 75,
+    "rows": 3613
+  },
+  "publication_strategy": {
+    "applied_sciences_minimum": {
+      "boxes": 100,
+      "classes": 3,
+      "damaged_images": 30,
+      "damaged_images_high": 50
+    },
+    "applied_sciences_preferred": {
+      "damaged_images": 100
+    },
+    "avoid_positioning": "large standalone Kazakhstan training dataset",
+    "current": {
+      "annotation_rows": 104,
+      "damaged_images": 50,
+      "gold_boxes": 34,
+      "kazakhstan_eval_all_zero": false,
+      "kazakhstan_eval_rows": 4,
+      "provisional_boxes": 70,
+      "publishable_images": 75,
+      "represented_detection_classes": [
+        "alligator_crack",
+        "longitudinal_crack",
+        "pothole",
+        "transverse_crack"
+      ]
+    },
+    "data_journal_minimum": {
+      "redistributable_images": 800,
+      "requires_repository_doi": true
+    },
+    "primary_target": "MDPI Applied Sciences Article",
+    "ready_for_applied_sciences_full_article": false,
+    "ready_for_data_journal": false,
+    "recommended_positioning": "Kazakhstan road-damage benchmark with Ghost-CA-YOLO adaptation and external validation"
+  },
+  "rdd": {
+    "boxes": 36059,
+    "class_distribution": {
+      "alligator_crack": 9214,
+      "longitudinal_crack": 13342,
+      "pothole": 5762,
+      "transverse_crack": 7741
+    },
+    "matched_images": 25846,
+    "messages": [],
+    "rdd_root": "data/external/RDD2022",
+    "status": "ready",
+    "usable_images": 17000,
+    "xml_files": 25846
+  },
+  "status": "ready",
+  "warnings": [
+    "Applied Sciences strength warning: 34 strict reviewed boxes are available; target at least 100.",
+    "Data journal fallback warning: 75 publishable images are available; data-journal route needs about 800 redistributable license-clean images plus a repository DOI."
+  ]
+}

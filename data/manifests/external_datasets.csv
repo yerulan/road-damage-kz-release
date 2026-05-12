@@ -1,0 +1,3 @@
+dataset_id,name,role,source_url,license_or_terms,local_path,notes
+rdd2022,Road Damage Dataset 2022,training-pretraining,https://github.com/sekilab/RoadDamageDetector/,per-dataset-terms-required,data/external/RDD2022,"Download externally and verify terms before use; import with roadkz import-rdd-voc."
+rdd2020,Road Damage Dataset 2020,training-pretraining,https://doi.org/10.1016/j.dib.2021.107133,per-dataset-terms-required,data/external/RDD2020,"Use as literature-grounded baseline data if download and terms are confirmed."
