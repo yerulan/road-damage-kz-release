@@ -1,8 +1,15 @@
 # Release Notes
 
-## v0.1.0-draft
+## v0.1.1
 
-Preparation release for the Applied Sciences submission package.
+Submission-ready GitHub-only release. This update removes the requirement for
+a Zenodo DOI, points the manuscript Data Availability Statement to the public
+GitHub release repository, adds the MDPI AI-assisted preparation disclosure,
+and rebuilds the manuscript and submission package.
+
+## v0.1.0
+
+Initial public release for the Applied Sciences submission package.
 
 Includes:
 
@@ -21,11 +28,11 @@ Excludes:
 - local processed datasets;
 - model run folders and weights.
 
-Before creating the final Zenodo release:
+The public repository for citation and data availability is:
 
-- sync real YOLO11s and Ghost-CA-YOLO metrics back from the GPU server;
-- update manuscript tables, figures, abstract, discussion, and conclusion;
-- regenerate `reports/experiment_table.csv`, `reports/paper_summary.json`, and `reports/project_status.json`;
-- rebuild `submission_package/`;
-- replace placeholder GitHub URLs in `CITATION.cff` and `.zenodo.json`;
-- tag the final GitHub release as `v1.0.0`.
+```text
+https://github.com/yerulan/road-damage-kz-release
+```
+
+Zenodo archiving can be added later if available; this release is designed to
+support journal submission through the public GitHub repository.

@@ -13,7 +13,7 @@ The main contributions are:
 3. A comparison with a YOLO11s baseline on RDD2022 and Kazakhstan imagery, including transfer and Kazakhstan fine-tuning experiments.
 4. A reproducible release plan containing code, manifests, annotations, reports, and reconstruction instructions without redistributing third-party raw images by default.
 
-The manuscript is original, has not been published elsewhere, and is not under consideration by another journal. All authors will approve the final submitted version. The research received no external funding. Conflicts of interest, author contributions, and data availability statements are included in the manuscript.
+The manuscript is original, has not been published elsewhere, and is not under consideration by another journal. All authors have approved the submitted version and agree with submission to Applied Sciences. The research received no external funding. Conflicts of interest, author contributions, and data availability statements are included in the manuscript.
 
 Suggested reviewers can be provided in SUSY after checking institutional emails and conflicts.
 

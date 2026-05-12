@@ -1,11 +1,11 @@
 cff-version: 1.2.0
 message: "If you use this code, manifests, annotations, or reports, please cite this project and the associated paper."
 title: "Road Damage Detection and Classification for Kazakhstan Road Imagery"
-version: "0.1.0"
-date-released: "2026-05-11"
+version: "0.1.1"
+date-released: "2026-05-12"
 type: software
 license: MIT
-repository-code: "https://github.com/yerulan/road-damage-kz"
+repository-code: "https://github.com/yerulan/road-damage-kz-release"
 abstract: "Code, manifests, annotations, reports, and Ghost-CA-YOLO experiment tooling for a Kazakhstan road-damage detection and classification study."
 keywords:
   - road damage detection

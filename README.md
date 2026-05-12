@@ -34,10 +34,15 @@ Raw images, processed data, model runs, and generated outputs are intentionally 
 
 ## Citation And Release
 
-The recommended public release route is GitHub plus a Zenodo DOI. Keep the
-repository private until measured YOLO11s and Ghost-CA-YOLO results are synced
-back and the manuscript tables are final. Before publishing, replace the
-placeholder repository URL in `CITATION.cff` and `.zenodo.json`.
+The public release repository for the Applied Sciences submission is:
+
+```text
+https://github.com/yerulan/road-damage-kz-release
+```
+
+Zenodo archiving can be added later if the service becomes available, but the
+current submission package uses the public GitHub repository as the data and
+code availability location.
 
 Code is released under the MIT License. Project-created manifests,
 annotations, and reports are released under CC BY 4.0. Raw third-party images

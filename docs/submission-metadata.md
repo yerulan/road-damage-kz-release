@@ -41,9 +41,9 @@ Working title: Road Damage Detection and Classification for Kazakhstan Road Imag
 
 - Funding: no external funding.
 - Corresponding author: Aizhan Sambetbayeva.
-- Repository route: GitHub repository plus Zenodo DOI after final files are stable.
-- Repository URL: `https://github.com/yerulan/road-damage-kz`
-- Zenodo DOI placeholder: wait until the final GitHub release is archived.
+- Repository route: public GitHub repository for the submission package.
+- Repository URL: `https://github.com/yerulan/road-damage-kz-release`
+- Zenodo DOI: not used for the initial submission because Zenodo was unavailable.
 - University repository: not planned.
 - Ghost-CA-YOLO wording: describe the method directly; do not frame it as reused from a previous paper.
 
@@ -55,7 +55,7 @@ Working title: Road Damage Detection and Classification for Kazakhstan Road Imag
 - Confirm APC payment route for Applied Sciences.
 - Provide 3-5 suggested reviewers with institutional email addresses and no conflicts of interest, if SUSY requires or strongly requests them.
 - Provide any opposed reviewers, if needed.
-- Provide final GitHub URL and Zenodo DOI for code/manifests/reports.
+- Provide final GitHub URL for code/manifests/reports.
 
 ## Suggested Reviewer Criteria
 

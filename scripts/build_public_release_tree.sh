@@ -61,4 +61,4 @@ public_release/
 EOF
 
 echo "Clean public release tree written to $OUT"
-echo "Review placeholders in CITATION.cff and .zenodo.json before publishing."
+echo "Review repository URLs in CITATION.cff, .zenodo.json, and paper/main.tex before publishing."

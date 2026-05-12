@@ -1,4 +1,4 @@
-# GitHub And Zenodo Release Procedure
+# GitHub Release Procedure
 
 Use this after the GPU experiments finish and the manuscript contains measured
 YOLO11s/Ghost-CA-YOLO results.
@@ -54,51 +54,46 @@ repository or orphan branch.
 The configured repository URL is:
 
 ```text
-https://github.com/yerulan/road-damage-kz
+https://github.com/yerulan/road-damage-kz-release
 ```
 
-If the repository changes later, update `CITATION.cff`, `.zenodo.json`, and
-`docs/submission-metadata.md`.
+If the repository changes later, update `CITATION.cff`, `.zenodo.json`,
+`paper/main.tex`, and `docs/submission-metadata.md`.
 
 ## 4. Create GitHub Repository
 
 Recommended repository visibility before submission: private while results are
-being finalized, then public before Zenodo archiving and journal submission.
+being finalized, then public before journal submission.
 
 ```bash
-git remote add origin git@github.com:yerulan/road-damage-kz.git
+git remote add origin git@github.com:yerulan/road-damage-kz-release.git
 git branch -M main
 git add .
-git commit -m "Prepare Kazakhstan road damage paper release"
+git commit -m "Initial public release for paper submission"
 git push -u origin main
 ```
 
 If a remote already exists, update the URL instead:
 
 ```bash
-git remote set-url origin git@github.com:yerulan/road-damage-kz.git
+git remote set-url origin git@github.com:yerulan/road-damage-kz-release.git
 ```
 
-## 5. Connect GitHub To Zenodo
-
-1. Log into Zenodo.
-2. Go to GitHub integration.
-3. Enable the repository.
-4. Create a GitHub release after final manuscript results are measured.
-5. Zenodo will archive the release and mint a DOI.
+## 5. Create GitHub Release
 
 Recommended final tag:
 
 ```bash
-git tag -a v1.0.0 -m "Measured Ghost-CA-YOLO Kazakhstan road damage release"
-git push origin v1.0.0
+git tag -a v0.1.0 -m "Initial public release for paper submission"
+git push origin v0.1.0
 ```
 
-Then create a GitHub release from `v1.0.0`.
+Then create a GitHub release from `v0.1.0`.
 
-## 6. After Zenodo DOI Exists
+## 6. Optional Zenodo Archive Later
 
-Update:
+Zenodo archiving can be added later if available. If a DOI is minted later,
+update:
 
 - `CITATION.cff`
 - `.zenodo.json`
